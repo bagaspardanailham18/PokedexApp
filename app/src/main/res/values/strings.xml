@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PokedexApp</string>
+    <string name="title_home">Home</string>
+    <string name="title_mypokemon">My Pokemon</string>
+</resources>
