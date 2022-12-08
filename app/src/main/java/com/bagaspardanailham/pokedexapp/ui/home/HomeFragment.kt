@@ -1,5 +1,6 @@
 package com.bagaspardanailham.pokedexapp.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,11 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bagaspardanailham.pokedexapp.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 import com.bagaspardanailham.pokedexapp.data.remote.Result
-import com.bagaspardanailham.pokedexapp.data.remote.response.PokemonByIdResponse
 import com.bagaspardanailham.pokedexapp.data.remote.response.ResultsItem
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,15 +64,24 @@ class HomeFragment : Fragment() {
                     }
                     is Result.Error -> {
                         Log.d("error", "Error Code: ${response.errorCode}")
-                        when (response.errorCode) {
-                            400 -> {
-                                Toast.makeText(requireActivity(), "Bad Request", Toast.LENGTH_LONG).show()
-                                binding.progressCircular.visibility = View.GONE
+                        if (response.isNetworkError) {
+                            when (response.errorCode) {
+                                400 -> {
+                                    Toast.makeText(requireActivity(), "Bad Request", Toast.LENGTH_LONG).show()
+                                    binding.progressCircular.visibility = View.GONE
+                                }
+                                404 -> {
+                                    Toast.makeText(requireActivity(), "Not Found", Toast.LENGTH_LONG).show()
+                                    binding.progressCircular.visibility = View.GONE
+                                }
+                                else -> {
+                                    Toast.makeText(requireActivity(), "Not Found", Toast.LENGTH_LONG).show()
+                                    binding.progressCircular.visibility = View.GONE
+                                }
                             }
-                            404 -> {
-                                Toast.makeText(requireActivity(), "Not Found", Toast.LENGTH_LONG).show()
-                                binding.progressCircular.visibility = View.GONE
-                            }
+                        } else {
+                            Toast.makeText(requireActivity(), "Check Your Internet Connection", Toast.LENGTH_LONG).show()
+                            binding.progressCircular.visibility = View.GONE
                         }
                     }
                 }
@@ -86,6 +96,13 @@ class HomeFragment : Fragment() {
             adapter = listPokeAdapter
             setHasFixedSize(true)
         }
+
+        listPokeAdapter.setOnItemClickCallback(object : ListPokeAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ResultsItem, picture: String?, dominantColor: Int) {
+                findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToPokeDetailActivity(data, picture, dominantColor))
+            }
+
+        })
     }
 
     override fun onDestroyView() {

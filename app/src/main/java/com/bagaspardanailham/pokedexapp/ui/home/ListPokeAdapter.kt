@@ -24,6 +24,12 @@ import com.bumptech.glide.request.target.Target
 
 class ListPokeAdapter: ListAdapter<ResultsItem, ListPokeAdapter.ListPokeVH>(DIFF_CALLBACK) {
 
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListPokeVH {
         val binding = ItemRowPokemonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListPokeVH(binding)
@@ -45,6 +51,10 @@ class ListPokeAdapter: ListAdapter<ResultsItem, ListPokeAdapter.ListPokeVH>(DIFF
             with(binding) {
                 tvNameItem.text = data.name
                 loadImage(this, data)
+
+                itemView.setOnClickListener {
+                    onItemClickCallback.onItemClicked(data, picture, dominantColor)
+                }
             }
         }
 
@@ -109,6 +119,10 @@ class ListPokeAdapter: ListAdapter<ResultsItem, ListPokeAdapter.ListPokeVH>(DIFF
                 return oldItem == newItem
             }
         }
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: ResultsItem, picture: String?, dominantColor: Int)
     }
 
 }

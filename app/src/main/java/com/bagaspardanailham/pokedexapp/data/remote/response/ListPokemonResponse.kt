@@ -1,6 +1,8 @@
 package com.bagaspardanailham.pokedexapp.data.remote.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class ListPokemonResponse(
 
@@ -17,6 +19,7 @@ data class ListPokemonResponse(
 	val results: List<ResultsItem?>? = null
 )
 
+@Parcelize
 data class ResultsItem(
 
 	@field:SerializedName("name")
@@ -24,4 +27,4 @@ data class ResultsItem(
 
 	@field:SerializedName("url")
 	val url: String? = null
-)
+): Parcelable

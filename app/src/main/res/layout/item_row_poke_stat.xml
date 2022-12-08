@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.apollo29.progressViews.ProgressLine android:id="@+id/hp_stat"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_weight="0.9"
+    app:definition="HP"
+    app:lineBarWidth="7dp"
+    app:lineProgressColor="@color/purple_200"
+    app:underLineColor="@android:color/darker_gray"
+    app:value="99"
+    app:valueDefTextSize="20sp"
+    app:valuePercentage="55"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
