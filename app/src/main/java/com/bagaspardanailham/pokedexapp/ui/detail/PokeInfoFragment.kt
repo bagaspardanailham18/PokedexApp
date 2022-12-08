@@ -8,9 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bagaspardanailham.pokedexapp.R
 import com.bagaspardanailham.pokedexapp.data.remote.Result
+import com.bagaspardanailham.pokedexapp.data.remote.response.MovesItem
 import com.bagaspardanailham.pokedexapp.data.remote.response.TypesItem
 import com.bagaspardanailham.pokedexapp.databinding.FragmentPokeInfoBinding
 import com.bagaspardanailham.pokedexapp.databinding.FragmentPokeStatsBinding
@@ -24,6 +27,7 @@ class PokeInfoFragment : Fragment() {
 
     private val pokeDetailViewModel by viewModels<PokeDetailViewModel>()
     private lateinit var adapter: ListPokeTypesAdapter
+    private lateinit var movesAdapter: ListPokeMovesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +42,7 @@ class PokeInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ListPokeTypesAdapter()
+        movesAdapter = ListPokeMovesAdapter()
         setContent()
     }
 
@@ -50,7 +55,9 @@ class PokeInfoFragment : Fragment() {
                 }
                 is Result.Success -> {
                     val typesData = response.data.types
+                    val movesData = response.data.moves
                     setTypesRv(typesData)
+                    setMovesRv(movesData)
                     binding?.progressCircular?.visibility = View.GONE
                 }
                 is Result.Error -> {
@@ -73,9 +80,18 @@ class PokeInfoFragment : Fragment() {
     private fun setTypesRv(types: List<TypesItem?>?) {
         adapter.submitList(types)
         binding?.apply {
-            rvStats.layoutManager = LinearLayoutManager(requireActivity())
-            rvStats.adapter = adapter
-            rvStats.setHasFixedSize(true)
+            rvTypes.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+            rvTypes.adapter = adapter
+            rvTypes.setHasFixedSize(true)
+        }
+    }
+
+    private fun setMovesRv(moves: List<MovesItem?>?) {
+        movesAdapter.submitList(moves)
+        binding?.apply {
+            rvMoves.layoutManager = StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL)
+            rvMoves.adapter = movesAdapter
+            rvMoves.setHasFixedSize(true)
         }
     }
 }

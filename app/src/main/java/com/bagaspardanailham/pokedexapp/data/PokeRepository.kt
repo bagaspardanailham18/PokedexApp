@@ -53,6 +53,12 @@ class PokeRepository @Inject constructor(private val apiService: ApiService, pri
                     404 -> emit(
                         Result.Error(true, throwable.code(), throwable.response()?.errorBody())
                     )
+                    500 -> emit(
+                        Result.Error(true, throwable.code(), throwable.response()?.errorBody())
+                    )
+                    else -> emit(
+                        Result.Error(true, throwable.code(), throwable.response()?.errorBody())
+                    )
                 }
             } else {
                 emit(
@@ -70,6 +76,11 @@ class PokeRepository @Inject constructor(private val apiService: ApiService, pri
     // Get Pokemon From Collection
     fun getPokemonCollection(): LiveData<List<MyPokeCollectionEntity>> {
         return pokeDatabase.pokeDao().getAllPokeCollection()
+    }
+
+    // Delete Pokemon from collection
+    suspend fun deletePokemon(data: MyPokeCollectionEntity) {
+        pokeDatabase.pokeDao().deleteNote(data)
     }
 
 }

@@ -7,12 +7,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bagaspardanailham.pokedexapp.data.local.model.MyPokeCollectionEntity
 import com.bagaspardanailham.pokedexapp.databinding.ItemRowPokemonBinding
+import com.bagaspardanailham.pokedexapp.databinding.ItemRowPokemonCollectionBinding
 import com.bumptech.glide.Glide
 
 class MyPokemonAdapter: ListAdapter<MyPokeCollectionEntity, MyPokemonAdapter.MyPokemonVH>(DIFF_CALLBACK) {
 
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyPokemonVH {
-        val binding = ItemRowPokemonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRowPokemonCollectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyPokemonVH(binding)
     }
 
@@ -21,17 +28,24 @@ class MyPokemonAdapter: ListAdapter<MyPokeCollectionEntity, MyPokemonAdapter.MyP
         holder.bind(item)
     }
 
-    inner class MyPokemonVH(private val binding: ItemRowPokemonBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class MyPokemonVH(private val binding: ItemRowPokemonCollectionBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: MyPokeCollectionEntity) {
             with(binding) {
                 tvNameItem.text = data.name
+                tvNicknameItem.text = data.nickname
                 Glide.with(itemView.context)
                     .load(data.imgUrl)
                     .into(tvImgItem)
 
                 itemPokeCard.setCardBackgroundColor(data.dominantColor!!)
+
+                itemView.setOnClickListener { onItemClickCallback.onItemClicked(data) }
             }
         }
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: MyPokeCollectionEntity)
     }
 
     companion object {
